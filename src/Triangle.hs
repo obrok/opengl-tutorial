@@ -32,16 +32,8 @@ mainLoop window vao = do
 
 render :: GL.VertexArrayObject -> IO ()
 render vao = do
-    print "renderin"
-    GLUtil.withVAO vao $ do
-      VertexArrays.vertexAttribPointer (VertexSpec.AttribLocation 0) $=
-        (VertexSpec.ToFloat, VertexArrays.VertexArrayDescriptor 3 VertexArrays.Float 0 Ptr.nullPtr)
-      print =<< GL.get (VertexArrays.vertexAttribArray $ VertexSpec.AttribLocation 0)
-      print =<< GL.get (VertexArrays.vertexAttribPointer $ VertexSpec.AttribLocation 0)
-      print =<< GL.get (GL.bindBuffer GL.ArrayBuffer)
-      print =<< GL.get GL.currentProgram
-      VertexArrays.drawArrays PrimitiveMode.Triangles 0 3
-    GLError.throwError
+  GLUtil.withVAO vao $ VertexArrays.drawArrays PrimitiveMode.Triangles 0 3
+  GLError.throwError
 
 vertices :: [GL.GLfloat]
 vertices =
@@ -51,18 +43,20 @@ vertices =
     0, 1, 0
  ]
 
+attribLocation :: VertexSpec.AttribLocation
+attribLocation = VertexSpec.AttribLocation 0
+
 makeVAO :: IO GL.VertexArrayObject
-makeVAO =
-  let
-    descriptor = VertexArrays.VertexArrayDescriptor 3 VertexArrays.Float 0 Ptr.nullPtr
-    attribLocation = VertexSpec.AttribLocation 0
-  in
-    GLUtil.makeVAO $ do
-      VertexArrays.vertexAttribArray attribLocation $= VertexArrays.Enabled
-      VertexArrays.vertexAttribPointer attribLocation $= (VertexSpec.ToFloat, descriptor)
-      makeBuffer vertices
-      shader <- loadShaderProgram
-      GL.currentProgram $= Just (GLUtil.program shader)
+makeVAO = GLUtil.makeVAO $ do
+  VertexArrays.vertexAttribArray attribLocation $= VertexArrays.Enabled
+  -- The below is kinda dumb... The buffer is not part of what is remembered by the VAO...
+  makeBuffer vertices
+  -- Important! Must set these after the buffer is bound, otherwise it doesn't take!
+  VertexArrays.vertexAttribPointer attribLocation $=
+    (VertexSpec.ToFloat, VertexArrays.VertexArrayDescriptor 3 VertexArrays.Float 0 Ptr.nullPtr)
+  shader <- loadShaderProgram
+  -- The program is also set globally
+  GL.currentProgram $= Just (GLUtil.program shader)
 
 makeBuffer :: Storable.Storable a => [a] -> IO ()
 makeBuffer xs =
