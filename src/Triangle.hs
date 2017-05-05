@@ -18,6 +18,7 @@ main :: IO ()
 main = do
   window <- Window.init
   vao <- makeVAO
+  makeBuffer noVertices
   mainLoop window vao
 
 mainLoop :: GLFW.Window -> GL.VertexArrayObject -> IO ()
@@ -43,6 +44,9 @@ vertices =
     0, 1, 0
  ]
 
+noVertices :: [GL.GLfloat]
+noVertices = []
+
 attribLocation :: VertexSpec.AttribLocation
 attribLocation = VertexSpec.AttribLocation 0
 
@@ -52,6 +56,8 @@ makeVAO = GLUtil.makeVAO $ do
   -- The below is kinda dumb... The buffer is not part of what is remembered by the VAO...
   makeBuffer vertices
   -- Important! Must set these after the buffer is bound, otherwise it doesn't take!
+  -- AHA! The buffer from this point is remembered, even though some other buffer is bound later.
+  -- That's at least true for drawArrays.
   VertexArrays.vertexAttribPointer attribLocation $=
     (VertexSpec.ToFloat, VertexArrays.VertexArrayDescriptor 3 VertexArrays.Float 0 Ptr.nullPtr)
   shader <- loadShaderProgram
