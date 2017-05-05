@@ -19,7 +19,7 @@ resX = 1024
 resY :: Int
 resY = 768
 
-windowTitle :: [Char]
+windowTitle :: String
 windowTitle = "Tutorial"
 
 init :: IO Window
