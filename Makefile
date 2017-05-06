@@ -1,6 +1,13 @@
-.PHONY: all lint run install configure test
+.PHONY: all lint install configure test triangle cube
 
-all: install configure test lint run
+triangle: install configure test lint
+	cabal run -- triangle
+
+triangle_camera: install configure test lint
+	cabal run -- triangle_camera
+
+cube: install configure test lint
+	cabal run -- cube
 
 install:
 	cabal install --only-dependencies
@@ -10,9 +17,6 @@ configure:
 
 lint:
 	.cabal-sandbox/bin/hlint .
-
-run:
-	cabal run
 
 test:
 	cabal exec -- runhaskell -isrc -itest test/Spec.hs

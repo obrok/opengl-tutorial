@@ -29,7 +29,8 @@ executable opengl-tutorial
                        StateVar >=1.1.0,
                        array >=0.5.1,
                        GLUtil >= 0.9.1.1,
-                       filepath ==1.4.*
+                       filepath ==1.4.*,
+                       linear ==1.20.*
   hs-source-dirs:      src
   default-language:    Haskell2010
   ghc-options:         -Wall -fno-ghci-sandbox -Werror
