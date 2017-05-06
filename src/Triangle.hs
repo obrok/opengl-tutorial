@@ -55,7 +55,7 @@ mvpMatrix :: Linear.M44 GL.GLfloat
 mvpMatrix = projectionMatrix !*! viewMatrix !*! modelMatrix
 
 projectionMatrix :: Linear.M44 GL.GLfloat
-projectionMatrix = Linear.perspective (pi / 4) (4 / 3) 0.1 100
+projectionMatrix = Linear.perspective (pi / 2) (4 / 3) 0.1 100
 
 viewMatrix :: Linear.M44 GL.GLfloat
 viewMatrix = Linear.lookAt eye center up
@@ -65,7 +65,10 @@ viewMatrix = Linear.lookAt eye center up
     up = Linear.V3 0 1 0
 
 modelMatrix :: Linear.M44 GL.GLfloat
-modelMatrix = Linear.identity
+modelMatrix = Linear.mkTransformationMat rotation translation
+  where
+    rotation = Linear.identity
+    translation = Linear.V3 3 0 0
 
 vertices :: [GL.GLfloat]
 vertices =
