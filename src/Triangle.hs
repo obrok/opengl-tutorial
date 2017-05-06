@@ -13,10 +13,8 @@ import qualified Graphics.Rendering.OpenGL.GL.PrimitiveMode as PrimitiveMode
 import qualified Graphics.GLUtil as GLUtil
 import qualified Paths_opengl_tutorial as Paths
 import qualified Graphics.GLUtil.GLError as GLError
-import qualified Linear.Matrix as Matrix
-import Linear.Matrix ((!*!))
-import qualified Linear.Projection as Projection
 import qualified Linear
+import Linear ((!*!))
 
 mainNoCamera :: IO ()
 mainNoCamera = main "red" render
@@ -53,20 +51,20 @@ renderCamera vao shader = do
     VertexArrays.drawArrays PrimitiveMode.Triangles 0 3
   GLError.throwError
 
-mvpMatrix :: Matrix.M44 GL.GLfloat
+mvpMatrix :: Linear.M44 GL.GLfloat
 mvpMatrix = projectionMatrix !*! viewMatrix !*! modelMatrix
 
-projectionMatrix :: Matrix.M44 GL.GLfloat
-projectionMatrix = Projection.perspective (pi / 4) (4 / 3) 0.1 100
+projectionMatrix :: Linear.M44 GL.GLfloat
+projectionMatrix = Linear.perspective (pi / 4) (4 / 3) 0.1 100
 
-viewMatrix :: Matrix.M44 GL.GLfloat
-viewMatrix = Projection.lookAt eye center up
+viewMatrix :: Linear.M44 GL.GLfloat
+viewMatrix = Linear.lookAt eye center up
   where
     eye = Linear.V3 4 3 3
     center = Linear.V3 0 0 0
     up = Linear.V3 0 1 0
 
-modelMatrix :: Matrix.M44 GL.GLfloat
+modelMatrix :: Linear.M44 GL.GLfloat
 modelMatrix = Linear.identity
 
 vertices :: [GL.GLfloat]
