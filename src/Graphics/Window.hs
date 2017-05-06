@@ -32,6 +32,7 @@ init = do
   GLFW.windowHint (WindowHint'OpenGLProfile OpenGLProfile'Core)
   GLFW.windowHint (WindowHint'OpenGLForwardCompat True)
   GLFW.windowHint (WindowHint'ClientAPI ClientAPI'OpenGL)
+  GLFW.windowHint (WindowHint'DepthBits 16)
 
   Just window <- GLFW.createWindow resX resY windowTitle Nothing Nothing
 
